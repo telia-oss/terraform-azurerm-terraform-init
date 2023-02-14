@@ -2,15 +2,17 @@
 ## Local Variables
 
 locals {
-  tags = merge(var.default_tags, var.user_defined_tags)
-
-  short_location = lookup(local.short_location_names, var.location, substr(var.location, 0, 3))
-
+  tags                 = merge(var.default_tags, var.user_defined_tags)
+  short_location       = lookup(local.short_location_names, var.location, substr(var.location, 0, 3))
   resource_group_name  = length(var.resource_group_name) > 0 ? var.resource_group_name : "rg-${var.name_prefix}-${local.short_location}-${random_string.resource_group[0].result}"
   storage_account_name = length(var.storage_account_name) > 0 ? var.storage_account_name : "sa${var.name_prefix}${local.short_location}${random_string.azurerm_storage_account[0].result}"
   container_name       = length(var.container_name) > 0 ? var.container_name : "sc-${var.name_prefix}-${local.short_location}"
+
+  resolved_storage_account_name = var.azurerm_create_storage_account == false ? data.azurerm_storage_account.this[0].name : azurerm_storage_account.this[0].name
+  resolved_resource_group_name  = var.azurerm_create_resource_group == false ? data.azurerm_resource_group.this[0].name : azurerm_resource_group.this[0].name
 }
 
+## Random Strings used for naming resources when not provided
 resource "random_string" "resource_group" {
   length  = 4
   special = false
@@ -34,18 +36,7 @@ resource "random_string" "azurerm_storage_account" {
   }
 }
 
-/*
-resource "random_string" "azurerm_storage_container" {
-  length  = 4
-  special = false
-
-  keepers = {
-    "name" = azurerm_storage_container.this.name
-  }
-}
-*/
-
-## Detect Existing Resources
+## Detect existing resources for state storage
 
 data "azurerm_resource_group" "this" {
   count = var.azurerm_create_resource_group == false ? 1 : 0
@@ -59,7 +50,7 @@ data "azurerm_storage_account" "this" {
 }
 
 
-## Create needed resources for state storage
+## Used when creating new resources for state storage
 
 resource "azurerm_resource_group" "this" {
   count    = var.azurerm_create_resource_group == false ? 0 : 1
@@ -78,7 +69,9 @@ resource "azurerm_storage_account" "this" {
   tags = local.tags
 }
 
+## The storage container which will hold the state file
 resource "azurerm_storage_container" "this" {
   name                 = local.container_name
+  container_access_type = var.container_access_type
   storage_account_name = var.azurerm_create_storage_account == false ? data.azurerm_storage_account.this[0].name : azurerm_storage_account.this[0].name
 }

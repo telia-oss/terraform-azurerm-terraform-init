@@ -1,5 +1,6 @@
 locals {
 
+  # This is a map of Azure region names to short names used in resource names
   short_location_names = {
     "us-east"          = "ue"
     "us-east-2"        = "ue2"

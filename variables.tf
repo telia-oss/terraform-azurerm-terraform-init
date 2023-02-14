@@ -1,6 +1,13 @@
 
 ## Variables
 
+
+variable "name_prefix" {
+  description = "The value is a prefix for the name of the resources created."
+  type        = string
+  default     = ""
+}
+
 variable "resource_group_name" {
   type    = string
   default = ""
@@ -27,38 +34,47 @@ variable "account_replication_type" {
 }
 
 variable "container_name" {
-  type    = string
-  default = "terraform-state"
+  type        = string
+  description = "The name of the storage container which will hold the state file."
+  default     = "terraform-state"
 }
 
 variable "container_access_type" {
-  type    = string
-  default = "private"
+
+  description = "The access level for the storage container. Possible values are private, blob, container."
+  type        = string
+  default     = "private"
 }
 
 variable "user_defined_tags" {
-  type    = map(string)
-  default = {}
+  description = "The value is a map of tags to assign to the resource."
+  type        = map(string)
+  default     = {}
 }
 
 variable "default_tags" {
-  type = map(string)
+  description = "The value is a map of default tags to assign to the resource."
+  type        = map(string)
   default = {
     "CreatedBy" = "Terraform"
   }
 }
 
-variable "name_prefix" {
-  type    = string
-  default = ""
-}
+
 
 variable "azurerm_create_resource_group" {
-  type    = bool
-  default = false
+  description = "The value is a boolean to indicate if the resource group should be created."
+  type        = bool
+  default     = false
 }
 
 variable "azurerm_create_storage_account" {
-  type    = bool
-  default = false
+
+  description = "The value is a boolean to indicate if the storage account should be created."
+  type        = bool
+  default     = false
+  /* validation {
+    condition     = var.azurerm_create_resource_group == true
+    error_message = "The image_id value must be a valid AMI id, starting with \"ami-\"."
+  }*/
 }
