@@ -5,7 +5,11 @@
 variable "name_prefix" {
   description = "The value is a prefix for the name of the resources created."
   type        = string
-  default     = ""
+
+  validation {
+    condition     = length(var.name_prefix) > 0
+    error_message = "The name_prefix value must be a non-empty string."
+  }
 }
 
 variable "resource_group_name" {
@@ -15,7 +19,10 @@ variable "resource_group_name" {
 
 variable "location" {
   type    = string
-  default = "westus2"
+}
+
+variable "environment" {
+  type    = string
 }
 
 variable "storage_account_name" {
@@ -60,8 +67,6 @@ variable "default_tags" {
   }
 }
 
-
-
 variable "azurerm_create_resource_group" {
   description = "The value is a boolean to indicate if the resource group should be created."
   type        = bool
@@ -74,7 +79,7 @@ variable "azurerm_create_storage_account" {
   type        = bool
   default     = false
   /* validation {
-    condition     = var.azurerm_create_resource_group == true
-    error_message = "The image_id value must be a valid AMI id, starting with \"ami-\"."
+    condition     = !(var.azurerm_create_resource_group == true && azurerm_create_storage_account == false)
+    error_message = "If azurerm_create_resource_group is true, azurerm_create_storage_account must also be true."
   }*/
 }

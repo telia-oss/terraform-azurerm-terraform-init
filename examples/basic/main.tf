@@ -1,6 +1,7 @@
 module "state_resources" {
   source                         = "../../"
   name_prefix                    = var.name_prefix
+  environment                    = var.environment
   location                       = var.location
   container_name                 = var.container_name
   user_defined_tags              = var.user_defined_tags

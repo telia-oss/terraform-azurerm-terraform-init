@@ -13,3 +13,7 @@ output "container_name" {
 output "name_prefix" {
   value = module.state_resources.name_prefix
 }
+
+output "backend_config" {
+  value = module.state_resources.backend_config
+}

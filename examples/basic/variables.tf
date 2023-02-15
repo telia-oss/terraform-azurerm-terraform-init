@@ -1,12 +1,17 @@
 
 variable "name_prefix" {
   type    = string
-  default = "dev"
+  default = "example"
 }
 
 variable "location" {
   type    = string
   default = "swedencentral"
+}
+
+variable "environment" {
+  type    = string
+  default = "dev"
 }
 
 variable "container_name" {
@@ -19,9 +24,4 @@ variable "user_defined_tags" {
   default = {
     "Environment" = "Development"
   }
-}
-
-variable "resource_group_name" {
-  type    = string
-  default = "rg-terraform-state-dev-swedencentral"
 }
