@@ -65,26 +65,37 @@ jobs:
           # https://github.com/terraform-linters/tflint/blob/master/docs/user-guide/plugins.md#avoiding-rate-limiting
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      # Run TFLint
+      # Run TFLint and capture the output
       - name: Run TFLint
         id: run-tflint
-        run: tflint -f compact
+        run: |
+          output=$(tflint -f compact)
+          echo "::set-output name=result::${output}"
 
       # Add a comment to the PR with the result of the Terraform checks
       - name: Add Check Comment
-        id: comment
+        if: always()
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
-            #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
-            #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            #### TFLint Check 🧪\`${{ steps.run-tflint.outcome }}\`
+            const fmtOutcome = ${{ steps.fmt.outcome }};
+            const initOutcome = ${{ steps.init.outcome }};
+            const validateOutcome = ${{ steps.validate.outcome }};
+            const tflintOutcome = ${{ steps.run-tflint.outcome }};
+            const tflintOutput = ${{ steps.run-tflint.outputs.result }};
+
+            const output = `
+            #### Terraform Format and Style 🖌\`${fmtOutcome}\`
+            #### Terraform Initialization ⚙️\`${initOutcome}\`
+            #### Terraform Validation 🤖\`${validateOutcome}\`
+            #### TFLint Check 🧪\`${tflintOutcome}\`
 
             <details><summary>Show TFLint Output</summary>
 
-            \`\`\`${{ steps.run-tflint.outputs.stdout }}\`\`\`
+            \`\`\`
+            ${tflintOutput}
+            \`\`\`
 
             </details>
 
@@ -95,4 +106,4 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
-            })
+            });
