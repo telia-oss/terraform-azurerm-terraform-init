@@ -79,11 +79,11 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const fmtOutcome = ${{ steps.fmt.outcome }};
-            const initOutcome = ${{ steps.init.outcome }};
-            const validateOutcome = ${{ steps.validate.outcome }};
-            const tflintOutcome = ${{ steps.run-tflint.outcome }};
-            const tflintOutput = ${{ steps.run-tflint.outputs.result }};
+            const fmtOutcome = '${{ steps.fmt.outcome }}';
+            const initOutcome = '${{ steps.init.outcome }}';
+            const validateOutcome = '${{ steps.validate.outcome }}';
+            const tflintOutcome = '${{ steps.run-tflint.outcome }}';
+            const tflintOutput = `${{ steps.run-tflint.outputs.result }}`;
 
             const output = `
             #### Terraform Format and Style 🖌\`${fmtOutcome}\`
@@ -106,4 +106,4 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               body: output
-            });
+            })
