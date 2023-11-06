@@ -50,7 +50,7 @@ jobs:
         id: setup-tflint
         uses: terraform-linters/setup-tflint@v3
         with:
-          tflint_version: v1.25.1
+          tflint_version: v0.48.0
 
       # Display TFLint version
       - name: Show TFLint Version
