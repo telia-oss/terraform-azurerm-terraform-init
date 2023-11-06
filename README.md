@@ -1,6 +1,25 @@
 # Azure Terraform State Management Module
 
-This module serves as a robust solution for managing Terraform state in Azure, encapsulating best practices in a simple, reusable module. It automates the provisioning of key Azure resources including a Resource Group, Storage Account, and Container, which are instrumental in managing Terraform state. Whether dealing with a single Terraform configuration or orchestrating multiple configurations, this module adapts to your needs, ensuring a standardized, secure, and efficient management of Terraform state. Through this module, managing Terraform state in Azure becomes a streamlined process, paving the way for a reliable and organized infrastructure setup.
+This module serves as a robust solution for managing Terraform state in Azure, encapsulating best practices in a simple, reusable module. It automates the provisioning of key Azure resources including a Resource Group, Storage Account, and Container, which are instrumental in managing Terraform state.
+
+```mermaid
+graph TD;
+    subgraph "Azure Cloud"
+        subgraph "Resource Group [RG]"
+            subgraph "Storage Account [SA]"
+                subgraph "Storage Container [SC]"
+                    subgraph TS[Terraform State Blob]
+                        subgraph "terraform.tfstate content"
+                            VS[Versioned States]
+                        end
+                    end
+                end
+            end
+        end
+    end
+```
+
+Whether dealing with a single Terraform configuration or orchestrating multiple configurations, this module adapts to your needs, ensuring a standardized, secure, and efficient management of Terraform state. Through this module, managing Terraform state in Azure becomes a streamlined process, paving the way for a reliable and organized infrastructure setup.
 
 ## Usage
 
