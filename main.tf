@@ -52,7 +52,6 @@ data "azurerm_storage_account" "this" {
 
 
 ## Used when creating new resources for state storage
-
 resource "azurerm_resource_group" "this" {
   count    = var.azurerm_create_resource_group == false ? 0 : 1
   name     = local.resource_group_name
@@ -73,6 +72,17 @@ resource "azurerm_storage_account" "this" {
   account_tier             = var.account_tier
   account_replication_type = var.account_replication_type
 
+  blob_properties {
+    versioning_enabled = var.enable_versioning
+
+    dynamic "container_delete_retention_policy" {
+      for_each = var.retention_days != null ? [1] : []
+      content {
+        days = var.retention_days
+      }
+    }
+  }
+
   tags = merge(local.tags,
     {
       "Name" = local.storage_account_name
@@ -82,13 +92,13 @@ resource "azurerm_storage_account" "this" {
 
 ## The storage container which will hold the state file
 resource "azurerm_storage_container" "this" {
-  name                 = local.container_name
+  name                  = local.container_name
   container_access_type = var.container_access_type
-  storage_account_name = var.azurerm_create_storage_account == false ? data.azurerm_storage_account.this[0].name : azurerm_storage_account.this[0].name
+  storage_account_name  = var.azurerm_create_storage_account == false ? data.azurerm_storage_account.this[0].name : azurerm_storage_account.this[0].name
 
   metadata = merge({
     for key, value in local.tags :
-      lower(key) => value
+    lower(key) => value
     },
     {
       "name" = local.container_name

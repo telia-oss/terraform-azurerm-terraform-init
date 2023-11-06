@@ -1,12 +1,12 @@
 output "backend_config" {
   description = "The backend configuration for the Terraform state."
   value = {
-      azurerm = {
-        resource_group_name  = local.resolved_resource_group_name
-        storage_account_name = local.resolved_storage_account_name
-        container_name       = azurerm_storage_container.this.name
-        key                  = "${var.name_prefix}-terraform.tfstate"
-  }}
+    azurerm = {
+      resource_group_name  = local.resolved_resource_group_name
+      storage_account_name = local.resolved_storage_account_name
+      container_name       = azurerm_storage_container.this.name
+      key                  = "${var.name_prefix}-terraform.tfstate"
+  } }
 }
 
 output "resource_group_name" {

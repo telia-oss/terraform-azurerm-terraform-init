@@ -1,11 +1,6 @@
-
-## Variables
-
-
 variable "name_prefix" {
-  description = "The value is a prefix for the name of the resources created."
+  description = "Prefix used to name all resources created by this module, ensuring a consistent naming convention."
   type        = string
-
   validation {
     condition     = length(var.name_prefix) > 0
     error_message = "The name_prefix value must be a non-empty string."
@@ -13,73 +8,90 @@ variable "name_prefix" {
 }
 
 variable "resource_group_name" {
-  type    = string
-  default = ""
+  description = "Name of the Azure Resource Group where resources will be created. If left empty, a new resource group is created."
+  type        = string
+  default     = ""
 }
 
 variable "location" {
-  type    = string
+  description = "Azure region where all resources in this module will be created."
+  type        = string
 }
 
 variable "environment" {
-  type    = string
+  description = "The environment for which this module is being deployed (e.g., prod, dev, staging)."
+  type        = string
 }
 
 variable "storage_account_name" {
-  type    = string
-  default = ""
+  description = "Name of the Azure Storage Account to be used or created for storing Terraform state."
+  type        = string
+  default     = ""
 }
 
 variable "account_tier" {
-  type    = string
-  default = "Standard"
+  description = "The performance tier of the storage account. Valid options are Standard or Premium."
+  type        = string
+  default     = "Standard"
 }
 
 variable "account_replication_type" {
-  type    = string
-  default = "LRS"
+  description = "The replication type for the storage account. Valid options are LRS, GRS, RAGRS, and ZRS."
+  type        = string
+  default     = "LRS"
 }
 
 variable "container_name" {
+  description = "Name of the storage container within the Azure Storage Account where the Terraform state file will be stored."
   type        = string
-  description = "The name of the storage container which will hold the state file."
   default     = "terraform-state"
 }
 
 variable "container_access_type" {
-
-  description = "The access level for the storage container. Possible values are private, blob, container."
+  description = "Defines the access level for the storage container. Valid options are private, blob, or container."
   type        = string
   default     = "private"
 }
 
 variable "user_defined_tags" {
-  description = "The value is a map of tags to assign to the resource."
+  description = "A map of user-defined tags to assign to all resources created by this module."
   type        = map(string)
   default     = {}
 }
 
 variable "default_tags" {
-  description = "The value is a map of default tags to assign to the resource."
+  description = "A map of default tags to assign to all resources created by this module. Merged with user_defined_tags, if any."
   type        = map(string)
   default = {
-    "CreatedBy" = "Terraform"
+    "ManagedBy" = "Terraform"
   }
 }
 
 variable "azurerm_create_resource_group" {
-  description = "The value is a boolean to indicate if the resource group should be created."
+  description = "Boolean flag to control whether a new resource group should be created or use an existing one."
   type        = bool
   default     = false
 }
 
 variable "azurerm_create_storage_account" {
-
-  description = "The value is a boolean to indicate if the storage account should be created."
+  description = "Boolean flag to control whether a new storage account should be created or use an existing one."
   type        = bool
   default     = false
   /* validation {
     condition     = !(var.azurerm_create_resource_group == true && azurerm_create_storage_account == false)
     error_message = "If azurerm_create_resource_group is true, azurerm_create_storage_account must also be true."
   }*/
+}
+
+variable "enable_versioning" {
+  description = "Boolean flag to control whether blob versioning should be enabled on the storage account."
+  type        = bool
+  default     = true
+
+}
+
+variable "retention_days" {
+  description = "Number of days to retain deleted blobs. Set to null to disable retention policy."
+  type        = number
+  default     = 30
 }

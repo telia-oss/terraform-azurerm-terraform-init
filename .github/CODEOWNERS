@@ -1,0 +1,8 @@
+# This is a CODEOWNERS file
+
+# These owners will be the default owners for everything in the repo.
+# Unless a later match takes precedence, @telia-oss/terraform-owners will be
+# requested for review when someone opens a pull request.
+# More information can be found here: https://help.github.com/articles/about-code-owners/
+
+*       @telia-oss/public-cloud-team @telia-oss/terraform-owners
